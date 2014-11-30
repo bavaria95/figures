@@ -6,6 +6,8 @@
 
 
 <button onclick="make()">Make move trapezoid</button>
+<button onclick="f()">Remove last figure</button>
+<button onclick="info()">Show info</button>
 
 
 <script>
@@ -14,16 +16,17 @@ var window_height = window.screen.availHeight;
 
 var figures = [];
 
-function Figure(type, id) {
+function Figure(type, id, level) {
 	this.type = type;
 	this.id = id;
+	this.level = level;
 }
 
 Figure.prototype.move = function() {
 
-	var fig = document.getElementById(this.type + this.id);
+	var fig = document.getElementById('figure' + this.id);
 
-	var speed_coef = 0.06;
+	var speed_coef = 0.06 * this.level;
 
 	var x = parseInt(fig.style.left);
 	var y = parseInt(fig.style.top);
@@ -54,9 +57,15 @@ Figure.prototype.move = function() {
   requestAnimationFrame(animate);
 }
 
+Figure.prototype.remove = function() {
+	var fig = document.getElementById('figure' + this.id);
+	fig.parentNode.removeChild(fig);
+	figures.pop();
+}
 
-function Trapezoid(id) {
-	Figure.call(this, 'trapezoid', id);
+
+function Trapezoid(id, level) {
+	Figure.call(this, 'trapezoid', id, level);
 }
 
 Trapezoid.prototype = Object.create(Figure.prototype);
@@ -76,34 +85,39 @@ Trapezoid.prototype.generate = function() {
 	att.value = "border-bottom: 100px solid red; border-left: 50px solid transparent; border-right: 50px solid transparent; height: 0; width: 100px; position: absolute; left: " + pos_x + "px" + "; top: " + pos_y + "px"; 
 	h1.setAttributeNode(att);
 	var att = document.createAttribute("id");
-	att.value = "trapezoid" + l;
+	att.value = "figure" + l;
 	h1.setAttributeNode(att);
 }
 
 
 function make() {
-	var t = new Trapezoid(1);
+	var t = new Trapezoid(1, 1);
 	t.generate();
 	t.move();
 
 	figures.push(t);
 
-	t = new Trapezoid(2);
+	t = new Trapezoid(2, 1);
 	t.generate();
 	t.move();
 	figures.push(t);
 
-	t = new Trapezoid(3);
+	t = new Trapezoid(3, 1);
 	t.generate();
 	t.move();
 	figures.push(t);	
 
-	console.log(figures);
-
-	// console.log(t.id);
+	console.log(figures.length);
 }
 
+function f() {
+	var last = figures[figures.length - 1];
+	last.remove();
+}
 
+function info() {
+	console.log(figures.length);
+}
 
 </script>
 
