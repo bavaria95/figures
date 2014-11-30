@@ -36,6 +36,8 @@ Figure.prototype.move = function() {
 	var dx = Math.floor((Math.random() * 10) + 1) * Math.pow(-1, Math.round(Math.random()));
 	var dy = Math.floor((Math.random() * 10) + 1) * Math.pow(-1, Math.round(Math.random()));
 
+	// console.log(this.id);
+
 	function animate(time) {
 		var rend_coef = 1;
 		if (lastTime != null)
@@ -61,7 +63,11 @@ Figure.prototype.move = function() {
 Figure.prototype.remove = function() {
 	var fig = document.getElementById('figure' + this.id);
 	fig.parentNode.removeChild(fig);
-	figures.pop();
+	for (var i = 0; i < figures.length; i++)
+		if (figures[i].id == this.id) {
+			figures.splice(i, 1);
+			break;
+		}
 }
 
 
@@ -70,9 +76,18 @@ function Trapezoid(id, level) {
 	this.generate();
 	this.move();
 
+
 	var figure = document.getElementById('figure' + this.id);
-	figure.addEventListener("click", function() {
-		console.log("BOOOM!");
+	figure.addEventListener("mouseover", function() {
+		var id = parseInt(/\d+/.exec(this.id));
+		console.log(figures);
+		console.log(id);
+
+		for (var i = 0; i < figures.length; i++)
+		if (figures[i].id == id) {
+			figures[i].remove();
+			break;
+		}
 	});
 }
 
@@ -98,6 +113,8 @@ Trapezoid.prototype.generate = function() {
 }
 
 
+
+
 function make() {
 	var t = new Trapezoid(1, 1);
 
@@ -107,7 +124,8 @@ function make() {
 	figures.push(t);
 
 	t = new Trapezoid(3, 1);
-	figures.push(t);	
+	figures.push(t);
+
 
 }
 
