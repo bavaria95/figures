@@ -6,7 +6,7 @@
 
 
 <button onclick="generate_trapezoid()">Press this button!</button>
-
+<!-- <button onclick="move()">Move!</button> -->
 
 
 <script>
@@ -33,7 +33,43 @@ function generate_trapezoid() {
 	var att = document.createAttribute("id");       // Create a "class" attribute
 	att.value = "trapezoid" + l;
 	h1.setAttributeNode(att);
+
+	move();
 }
+
+function move() {
+	type = 'trapezoid';
+	id = 1;
+	var fig = document.getElementById(type + id);
+
+	console.log(fig);
+
+	var x = parseInt(fig.style.left);
+	var y = parseInt(fig.style.top);
+
+	var angle = 0, lastTime = null;
+
+	var dx = Math.floor((Math.random() * 10) + 1) * Math.pow(-1, Math.round(Math.random()));
+	var dy = Math.floor((Math.random() * 10) + 1) * Math.pow(-1, Math.round(Math.random()));
+
+	console.log(x, ' ', y, ' ', dx, ' ', dy);
+	// console.log(x + dx + 'dx');
+	function animate(time) {
+    if (lastTime != null) {
+      // angle += (time - lastTime) * 0.001;
+      x += (time - lastTime) * dx * 0.05;
+      y += (time - lastTime) * dy * 0.05;
+    }
+    lastTime = time;
+
+    fig.style.left = x + "px";
+    fig.style.top = y + "px";
+
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+}
+
 
 </script>
 
