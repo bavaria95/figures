@@ -5,64 +5,44 @@
 <body>
 
 
-<button onclick="generate_trapezoid()">Press this button!</button>
-<!-- <button onclick="move()">Move!</button> -->
+<button onclick="make()">Make move trapezoid</button>
 
 
 <script>
 var window_width = window.screen.availWidth;
 var window_height = window.screen.availHeight;
 
-function generate_trapezoid() {
-	var pos_x = Math.floor((Math.random() * (window_width - 210)));
-	var pos_y = Math.floor((Math.random() * (window_height - 210)));
 
-	console.log(pos_x, pos_y);
+function Figure() {
 
-	var btn = document.createElement("DIV");        // Create a <button> element
-	// var t = document.createTextNode("CLICK ME");       // Create a text node
-	// btn.appendChild(t);                                // Append the text to <button>
-	document.body.appendChild(btn);  
-
-    var h1 = document.getElementsByTagName("div");   // Get the first <h1> element in the document
-    var l = h1.length;
-    h1 = h1[l - 1];
-	var att = document.createAttribute("style");       // Create a "class" attribute
-	att.value = "border-bottom: 100px solid red; border-left: 50px solid transparent; border-right: 50px solid transparent; height: 0; width: 100px; position: absolute; left: " + pos_x + "px" + "; top: " + pos_y + "px";                           // Set the value of the class attribute
-	h1.setAttributeNode(att);
-	var att = document.createAttribute("id");       // Create a "class" attribute
-	att.value = "trapezoid" + l;
-	h1.setAttributeNode(att);
-
-	move();
 }
 
-function move() {
-	type = 'trapezoid';
-	id = 1;
+Figure.prototype.move = function(type, id) {
+
 	var fig = document.getElementById(type + id);
 
-	var speed_coef = 0.05;
-
-	console.log(fig);
+	var speed_coef = 0.06;
 
 	var x = parseInt(fig.style.left);
 	var y = parseInt(fig.style.top);
 
-	var angle = 0, lastTime = null;
+	var lastTime = null;
 
 	var dx = Math.floor((Math.random() * 10) + 1) * Math.pow(-1, Math.round(Math.random()));
 	var dy = Math.floor((Math.random() * 10) + 1) * Math.pow(-1, Math.round(Math.random()));
 
-	console.log(x, ' ', y, ' ', dx, ' ', dy);
 	function animate(time) {
+		var rend_coef = 1;
+		if (lastTime != null)
+			rend_coef = (lastTime - time) * speed_coef;
+
     	if ((x + dx < 0) || (x + dx > window_width - 200))
     		dx *= -1;
-    	x += dx;
+    	x += dx * rend_coef;
 
     	if ((y + dy < 0) || (y + dy > window_height - 200))
     		dy *= -1;
-    	y += dy;
+    	y += dy * rend_coef;
 
     fig.style.left = x + "px";
     fig.style.top = y + "px";
@@ -71,6 +51,41 @@ function move() {
   }
   requestAnimationFrame(animate);
 }
+
+
+function Trapezoid() {
+	Figure.call(this);
+}
+
+Trapezoid.prototype = Object.create(Figure.prototype);
+
+
+Trapezoid.prototype.generate = function() {
+	var pos_x = Math.floor((Math.random() * (window_width - 210)));
+	var pos_y = Math.floor((Math.random() * (window_height - 210)));
+
+	var new_div = document.createElement("DIV"); 
+	document.body.appendChild(new_div);  
+
+    var h1 = document.getElementsByTagName("div");
+    var l = h1.length;
+    h1 = h1[l - 1];
+	var att = document.createAttribute("style");
+	att.value = "border-bottom: 100px solid red; border-left: 50px solid transparent; border-right: 50px solid transparent; height: 0; width: 100px; position: absolute; left: " + pos_x + "px" + "; top: " + pos_y + "px"; 
+	h1.setAttributeNode(att);
+	var att = document.createAttribute("id");
+	att.value = "trapezoid" + l;
+	h1.setAttributeNode(att);
+}
+
+
+function make() {
+	var t1 = new Trapezoid();
+	t1.generate();
+	t1.move('trapezoid', 1);
+	t1.test();
+}
+
 
 
 </script>
