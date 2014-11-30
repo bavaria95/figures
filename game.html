@@ -12,14 +12,16 @@
 var window_width = window.screen.availWidth;
 var window_height = window.screen.availHeight;
 
+var figures = [];
 
-function Figure() {
-
+function Figure(type, id) {
+	this.type = type;
+	this.id = id;
 }
 
-Figure.prototype.move = function(type, id) {
+Figure.prototype.move = function() {
 
-	var fig = document.getElementById(type + id);
+	var fig = document.getElementById(this.type + this.id);
 
 	var speed_coef = 0.06;
 
@@ -53,8 +55,8 @@ Figure.prototype.move = function(type, id) {
 }
 
 
-function Trapezoid() {
-	Figure.call(this);
+function Trapezoid(id) {
+	Figure.call(this, 'trapezoid', id);
 }
 
 Trapezoid.prototype = Object.create(Figure.prototype);
@@ -80,10 +82,25 @@ Trapezoid.prototype.generate = function() {
 
 
 function make() {
-	var t1 = new Trapezoid();
-	t1.generate();
-	t1.move('trapezoid', 1);
-	t1.test();
+	var t = new Trapezoid(1);
+	t.generate();
+	t.move();
+
+	figures.push(t);
+
+	t = new Trapezoid(2);
+	t.generate();
+	t.move();
+	figures.push(t);
+
+	t = new Trapezoid(3);
+	t.generate();
+	t.move();
+	figures.push(t);	
+
+	console.log(figures);
+
+	// console.log(t.id);
 }
 
 
