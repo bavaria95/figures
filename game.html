@@ -127,7 +127,6 @@ function Trapezoid(id, level) {
 	this.bouncyRight = 200;
 	this.styleColor = "border-bottom: 100px solid " + getRandomColor() + ";"
 	Figure.call(this, 'trapezoid', id, level);
-	// this.addListener();
 }
 Trapezoid.prototype = Object.create(Figure.prototype);
 
@@ -137,7 +136,6 @@ function Triangle(id, level) {
 	this.bouncyBottom = 210;
 	this.styleColor = "border-bottom: 100px solid " + getRandomColor() + ";"
 	Figure.call(this, 'triangle', id, level);
-	// this.addListener();
 }
 Triangle.prototype = Object.create(Figure.prototype);
 
@@ -147,7 +145,6 @@ function Circle(id, level) {
 	this.bouncyBottom = 210;
 	this.styleColor = "background: " + getRandomColor() + ";";
 	Figure.call(this, 'circle', id, level);
-	// this.addListener();
 }
 Circle.prototype = Object.create(Figure.prototype);
 
@@ -156,7 +153,6 @@ function Square(id, level) {
 	this.bouncyBottom = 210;
 	this.styleColor = "background: " + getRandomColor() + ";";
 	Figure.call(this, 'square', id, level);
-	// this.addListener();
 }
 Square.prototype = Object.create(Figure.prototype);
 
@@ -165,7 +161,6 @@ function Rectangle(id, level) {
 	this.bouncyBottom = 210;
 	this.styleColor = "background: " + getRandomColor() + ";";
 	Figure.call(this, 'rectangle', id, level);
-	// this.addListener();
 }
 Rectangle.prototype = Object.create(Figure.prototype);
 
@@ -174,7 +169,6 @@ function Oval(id, level) {
 	this.bouncyBottom = 210;
 	this.styleColor = "background: " + getRandomColor() + ";";
 	Figure.call(this, 'oval', id, level);
-	// this.addListener();
 }
 Oval.prototype = Object.create(Figure.prototype);
 
@@ -183,9 +177,25 @@ function Parallelogram(id, level) {
 	this.bouncyBottom = 210;
 	this.styleColor = "background: " + getRandomColor() + ";";
 	Figure.call(this, 'parallelogram', id, level);
-	// this.addListener();
 }
 Parallelogram.prototype = Object.create(Figure.prototype);
+
+function StarSix(id, level) {
+	this.bouncyRight = 100;
+	this.bouncyBottom = 240;
+	this.styleColor = "border-bottom: 100px solid " + getRandomColor() + ";";
+	Figure.call(this, 'star-six', id, level);
+}
+StarSix.prototype = Object.create(Figure.prototype);
+
+function StarFive(id, level) {
+	this.bouncyRight = 195;
+	this.bouncyBottom = 280;
+	this.styleColor = "";
+	Figure.call(this, 'star-five', id, level);
+}
+StarFive.prototype = Object.create(Figure.prototype);
+
 
 
 
@@ -199,7 +209,7 @@ function make() {
 	t = new Oval(3, 1);
 	figures.push(t);
 
-	t = new Parallelogram(4, 1);
+	t = new StarFive(4, 1);
 	figures.push(t);
 }
 
