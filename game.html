@@ -125,8 +125,24 @@ Figure.prototype.remove = function() {
 	for (var i = 0; i < figures.length; i++)
 		if (figures[i].id == this.id) {
 			figures.splice(i, 1);
+			fig.removeEventListener("mouseover", this.listener());
 			break;
 		}
+}
+
+Figure.prototype.listener = function() {
+		var id = parseInt(/\d+/.exec(this.id));
+
+		for (var i = 0; i < figures.length; i++)
+			if (figures[i].id == id) {
+				figures[i].remove();
+				break;
+			}
+	}
+
+Figure.prototype.addListener = function() {
+	var figure = document.getElementById('figure' + this.id);
+	figure.addEventListener("mouseover", this.listener());
 }
 
 
@@ -135,18 +151,7 @@ function Trapezoid(id, level) {
 	this.bouncyBottom = 210;
 	this.bouncyRight = 200;
 	Figure.call(this, 'trapezoid', id, level);
-
-
-	var figure = document.getElementById('figure' + this.id);
-	figure.addEventListener("mouseover", function() {
-		var id = parseInt(/\d+/.exec(this.id));
-
-		for (var i = 0; i < figures.length; i++)
-			if (figures[i].id == id) {
-				figures[i].remove();
-				break;
-			}
-	});
+	this.addListener();
 }
 
 Trapezoid.prototype = Object.create(Figure.prototype);
@@ -156,20 +161,7 @@ function Triangle(id, level) {
 	this.bouncyRight = 95;
 	this.bouncyBottom = 210;
 	Figure.call(this, 'triangle', id, level);
-
-
-	var figure = document.getElementById('figure' + this.id);
-	figure.addEventListener("mouseover", function() {
-		var id = parseInt(/\d+/.exec(this.id));
-		console.log(figures);
-		console.log(id);
-
-		for (var i = 0; i < figures.length; i++)
-		if (figures[i].id == id) {
-			figures[i].remove();
-			break;
-		}
-	});
+	this.addListener();
 }
 
 Triangle.prototype = Object.create(Figure.prototype);
@@ -179,20 +171,7 @@ function Circle(id, level) {
 	this.bouncyRight = 100;
 	this.bouncyBottom = 207;
 	Figure.call(this, 'circle', id, level);
-
-
-	var figure = document.getElementById('figure' + this.id);
-	figure.addEventListener("mouseover", function() {
-		var id = parseInt(/\d+/.exec(this.id));
-		console.log(figures);
-		console.log(id);
-
-		for (var i = 0; i < figures.length; i++)
-		if (figures[i].id == id) {
-			figures[i].remove();
-			break;
-		}
-	});
+	this.addListener();
 }
 
 Circle.prototype = Object.create(Figure.prototype);
