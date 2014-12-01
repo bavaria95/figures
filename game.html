@@ -5,34 +5,7 @@
 <body>
 
 <style>
-.circle {
-	position: absolute;
-	left: 300px;
-	top: 300px;
-    width: 100px;
-    height: 100px;
-    background: red;
-    -moz-border-radius: 50px;
-    -webkit-border-radius: 50px;
-    border-radius: 50px;
-}
-
-.triangle {
-    width: 0;
-    height: 0;
-    border-left: 50px solid transparent;
-    border-right: 50px solid transparent;
-    border-bottom: 100px solid red;
-}
-
-.trapezoid {
-    border-bottom: 100px solid red;
-    border-left: 50px solid transparent;
-    border-right: 50px solid transparent;
-    height: 0;
-    width: 100px;
-}
-
+@import url('figures.css');
 </style>
 
 <button onclick="make()">Make move figures</button>
@@ -44,6 +17,11 @@ var window_width = window.screen.availWidth;
 var window_height = window.screen.availHeight;
 
 var figures = [];
+var colors = ['black', 'red', 'yellow', 'olive', 'springgreen', 'mediumturquoise', 'darkturquoise', 'navy', 'darkviolet', 'darkorange', 'maroon', 'darkgray', 'brown', 'peach'];
+
+function getRandomColor() {
+	return colors[Math.floor(Math.random() * colors.length)];
+}
 
 function Figure(type, id, level) {
 	this.type = type;
@@ -52,6 +30,7 @@ function Figure(type, id, level) {
 
 	this.generate();
 	this.move();
+	this.addListener();
 }
 
 Figure.prototype.generate = function() {
@@ -74,7 +53,7 @@ Figure.prototype.generate = function() {
 	fig.setAttributeNode(att);
 
 	var att = document.createAttribute("style");
-	att.value = "position: absolute; left: " + pos_x + "px;" + "top: " + pos_y + "px;";
+	att.value = "position: absolute; left: " + pos_x + "px;" + "top: " + pos_y + "px;" + this.styleColor;
 	fig.setAttributeNode(att);
 }
 
@@ -101,7 +80,6 @@ Figure.prototype.move = function() {
 		if (lastTime != null)
 			rend_coef = (lastTime - time) * speed_coef;
 
-		console.log(fig.bouncyBottom);
     	if ((x + dx < 0) || (x + dx > window_width - bouncyRight))
     		dx *= -1;
     	x += dx * rend_coef;
@@ -125,24 +103,21 @@ Figure.prototype.remove = function() {
 	for (var i = 0; i < figures.length; i++)
 		if (figures[i].id == this.id) {
 			figures.splice(i, 1);
-			fig.removeEventListener("mouseover", this.listener());
 			break;
 		}
 }
 
-Figure.prototype.listener = function() {
-		var id = parseInt(/\d+/.exec(this.id));
 
+Figure.prototype.addListener = function() {
+	var figure = document.getElementById('figure' + this.id);
+	figure.addEventListener("mouseover", function() {
+		var id = parseInt(/\d+/.exec(this.id));
 		for (var i = 0; i < figures.length; i++)
 			if (figures[i].id == id) {
 				figures[i].remove();
 				break;
 			}
-	}
-
-Figure.prototype.addListener = function() {
-	var figure = document.getElementById('figure' + this.id);
-	figure.addEventListener("mouseover", this.listener());
+	});
 }
 
 
@@ -150,46 +125,82 @@ Figure.prototype.addListener = function() {
 function Trapezoid(id, level) {
 	this.bouncyBottom = 210;
 	this.bouncyRight = 200;
+	this.styleColor = "border-bottom: 100px solid " + getRandomColor() + ";"
 	Figure.call(this, 'trapezoid', id, level);
-	this.addListener();
+	// this.addListener();
 }
-
 Trapezoid.prototype = Object.create(Figure.prototype);
 
 
 function Triangle(id, level) {
 	this.bouncyRight = 95;
 	this.bouncyBottom = 210;
+	this.styleColor = "border-bottom: 100px solid " + getRandomColor() + ";"
 	Figure.call(this, 'triangle', id, level);
-	this.addListener();
+	// this.addListener();
 }
-
 Triangle.prototype = Object.create(Figure.prototype);
 
 
 function Circle(id, level) {
 	this.bouncyRight = 100;
-	this.bouncyBottom = 207;
+	this.bouncyBottom = 210;
+	this.styleColor = "background: " + getRandomColor() + ";";
 	Figure.call(this, 'circle', id, level);
-	this.addListener();
+	// this.addListener();
 }
-
 Circle.prototype = Object.create(Figure.prototype);
+
+function Square(id, level) {
+	this.bouncyRight = 100;
+	this.bouncyBottom = 210;
+	this.styleColor = "background: " + getRandomColor() + ";";
+	Figure.call(this, 'square', id, level);
+	// this.addListener();
+}
+Square.prototype = Object.create(Figure.prototype);
+
+function Rectangle(id, level) {
+	this.bouncyRight = 200;
+	this.bouncyBottom = 210;
+	this.styleColor = "background: " + getRandomColor() + ";";
+	Figure.call(this, 'rectangle', id, level);
+	// this.addListener();
+}
+Rectangle.prototype = Object.create(Figure.prototype);
+
+function Oval(id, level) {
+	this.bouncyRight = 200;
+	this.bouncyBottom = 210;
+	this.styleColor = "background: " + getRandomColor() + ";";
+	Figure.call(this, 'oval', id, level);
+	// this.addListener();
+}
+Oval.prototype = Object.create(Figure.prototype);
+
+function Parallelogram(id, level) {
+	this.bouncyRight = 185;
+	this.bouncyBottom = 210;
+	this.styleColor = "background: " + getRandomColor() + ";";
+	Figure.call(this, 'parallelogram', id, level);
+	// this.addListener();
+}
+Parallelogram.prototype = Object.create(Figure.prototype);
 
 
 
 function make() {
-	var t = new Circle(1, 1);
+	var t = new Square(1, 1);
 	figures.push(t);
 
-	console.log(t.style);
-
-	t = new Triangle(2, 1);
+	t = new Rectangle(2, 1);
 	figures.push(t);
 
-	t = new Trapezoid(3, 1);
+	t = new Oval(3, 1);
 	figures.push(t);
 
+	t = new Parallelogram(4, 1);
+	figures.push(t);
 }
 
 function f() {
