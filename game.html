@@ -17,7 +17,7 @@ var window_width = window.screen.availWidth;
 var window_height = window.screen.availHeight;
 
 var figures = [];
-var colors = ['black', 'red', 'yellow', 'olive', 'springgreen', 'mediumturquoise', 'darkturquoise', 'navy', 'darkviolet', 'darkorange', 'maroon', 'darkgray', 'brown', 'peach'];
+var colors = ['black', 'yellow', 'olive', 'springgreen', 'mediumturquoise', 'navy', 'darkviolet', 'darkorange', 'maroon', 'darkgray', 'brown', 'peach'];
 
 function getRandomColor() {
 	return colors[Math.floor(Math.random() * colors.length)];
@@ -34,8 +34,8 @@ function Figure(type, id, level) {
 }
 
 Figure.prototype.generate = function() {
-	var pos_x = Math.floor((Math.random() * (window_width - this.bouncyRight - 10)));
-	var pos_y = Math.floor((Math.random() * (window_height - this.bouncyBottom - 10)));
+	var pos_x = Math.floor((Math.random() * (window_width - this.bouncyRight - 20)));
+	var pos_y = Math.floor((Math.random() * (window_height - this.bouncyBottom - 20)));
 
 	var new_div = document.createElement("DIV"); 
 	document.body.appendChild(new_div);  
@@ -63,6 +63,8 @@ Figure.prototype.move = function() {
 	var fig = document.getElementById('figure' + this.id);
 	var bouncyBottom = this.bouncyBottom;
 	var bouncyRight = this.bouncyRight;
+	var bouncyLeft = this.bouncyLeft || 0;
+	var bouncyTop = this.bouncyTop || 0;
 
 	var speed_coef = 0.06 * this.level;
 
@@ -80,11 +82,11 @@ Figure.prototype.move = function() {
 		if (lastTime != null)
 			rend_coef = (lastTime - time) * speed_coef;
 
-    	if ((x + dx < 0) || (x + dx > window_width - bouncyRight))
+    	if ((x + dx < bouncyLeft) || (x + dx > window_width - bouncyRight))
     		dx *= -1;
     	x += dx * rend_coef;
 
-    	if ((y + dy < 0) || (y + dy > window_height - bouncyBottom))
+    	if ((y + dy < bouncyTop) || (y + dy > window_height - bouncyBottom))
     		dy *= -1;
     	y += dy * rend_coef;
 
@@ -196,20 +198,45 @@ function StarFive(id, level) {
 }
 StarFive.prototype = Object.create(Figure.prototype);
 
+function Pentagon(id, level) {
+	this.bouncyRight = 90;
+	this.bouncyBottom = 153;
+	this.bouncyTop = 28;
+	this.styleColor = "";
+	Figure.call(this, 'pentagon', id, level);
+}
+Pentagon.prototype = Object.create(Figure.prototype);
 
+function Hexagon(id, level) {
+	this.bouncyRight = 100;
+	this.bouncyBottom = 190;
+	this.bouncyTop = 24;
+	this.styleColor = "";
+	Figure.call(this, 'hexagon', id, level);
+}
+Hexagon.prototype = Object.create(Figure.prototype);
+
+function Pacman(id, level) {
+	this.bouncyRight = 105;
+	this.bouncyBottom = 225;
+	var c = getRandomColor();
+	this.styleColor = "border-top: 60px solid " + c + ";border-left: 60px solid " + c + ";border-bottom: 60px solid " + c + ";";
+	Figure.call(this, 'pacman', id, level);
+}
+Pacman.prototype = Object.create(Figure.prototype);
 
 
 function make() {
-	var t = new Square(1, 1);
-	figures.push(t);
+	// var t = new Square(1, 1);
+	// figures.push(t);
 
-	t = new Rectangle(2, 1);
-	figures.push(t);
+	// t = new Rectangle(2, 1);
+	// figures.push(t);
 
-	t = new Oval(3, 1);
-	figures.push(t);
+	// t = new Hexagon(3, 1);
+	// figures.push(t);
 
-	t = new StarFive(4, 1);
+	t = new Pacman(1, 1);
 	figures.push(t);
 }
 
