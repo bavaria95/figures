@@ -225,6 +225,8 @@ function Pacman(id, level) {
 }
 Pacman.prototype = Object.create(Figure.prototype);
 
+var shapes = [function(id, level) {return new Trapezoid(id, level)}, function(id, level) {return new Triangle(id, level)}, function(id, level) {return new Circle(id, level)}, function(id, level) {return new Square(id, level)}, function(id, level) {return new Rectangle(id, level)}, function(id, level) {return new Oval(id, level)}, function(id, level) {return new Parallelogram(id, level)}, function(id, level) {return new StarSix(id, level)}, function(id, level) {return new StarFive(id, level)}, function(id, level) {return new Pentagon(id, level)}, function(id, level) {return new Hexagon(id, level)}, function(id, level) {return new Pacman(id, level)}];
+
 
 function make() {
 	// var t = new Square(1, 1);
