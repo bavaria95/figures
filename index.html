@@ -18,15 +18,16 @@ var window_height = window.screen.availHeight;
 
 var figures = [];
 var colors = ['black', 'yellow', 'olive', 'springgreen', 'mediumturquoise', 'navy', 'darkviolet', 'darkorange', 'maroon', 'darkgray', 'brown', 'peach'];
+var current_id = 0;
+var level = 1;
 
 function getRandomColor() {
 	return colors[Math.floor(Math.random() * colors.length)];
 }
 
-function Figure(type, id, level) {
+function Figure(type, id) {
 	this.type = type;
 	this.id = id;
-	this.level = level;
 
 	this.generate();
 	this.move();
@@ -37,19 +38,16 @@ Figure.prototype.generate = function() {
 	var pos_x = Math.floor((Math.random() * (window_width - this.bouncyRight - 20)));
 	var pos_y = Math.floor((Math.random() * (window_height - this.bouncyBottom - 20)));
 
-	var new_div = document.createElement("DIV"); 
-	document.body.appendChild(new_div);  
+	var fig = document.createElement("DIV"); 
 
-    var fig = document.getElementsByTagName("div");
-    var len = fig.length;
-    fig = fig[len - 1];
+	document.body.appendChild(fig);  
 
 	var att = document.createAttribute("class");
 	att.value = this.type; 
 	fig.setAttributeNode(att);
 	
 	var att = document.createAttribute("id");
-	att.value = "figure" + len;
+	att.value = "figure" + this.id;
 	fig.setAttributeNode(att);
 
 	var att = document.createAttribute("style");
@@ -59,14 +57,15 @@ Figure.prototype.generate = function() {
 
 
 Figure.prototype.move = function() {
-
+	console.log('this during move: ', this);
 	var fig = document.getElementById('figure' + this.id);
+	console.log('figure:', fig);
 	var bouncyBottom = this.bouncyBottom;
 	var bouncyRight = this.bouncyRight;
 	var bouncyLeft = this.bouncyLeft || 0;
 	var bouncyTop = this.bouncyTop || 0;
 
-	var speed_coef = 0.06 * this.level;
+	var speed_coef = 0.06 * level;
 
 	var x = parseInt(fig.style.left);
 	var y = parseInt(fig.style.top);
@@ -102,16 +101,23 @@ Figure.prototype.move = function() {
 Figure.prototype.remove = function() {
 	var fig = document.getElementById('figure' + this.id);
 	fig.parentNode.removeChild(fig);
+
+	console.log(figures.length, figures);
 	for (var i = 0; i < figures.length; i++)
 		if (figures[i].id == this.id) {
+			console.log('deleting element: ', i);
 			figures.splice(i, 1);
 			break;
 		}
+	console.log(figures.length, figures);
+	console.log(figures.length, figures);
 }
 
 
 Figure.prototype.addListener = function() {
+	console.log('this.id = ', this.id);
 	var figure = document.getElementById('figure' + this.id);
+	console.log('figure: ', figure);
 	figure.addEventListener("mouseover", function() {
 		var id = parseInt(/\d+/.exec(this.id));
 		for (var i = 0; i < figures.length; i++)
@@ -124,123 +130,127 @@ Figure.prototype.addListener = function() {
 
 
 
-function Trapezoid(id, level) {
+function Trapezoid(id) {
 	this.bouncyBottom = 210;
 	this.bouncyRight = 200;
 	this.styleColor = "border-bottom: 100px solid " + getRandomColor() + ";"
-	Figure.call(this, 'trapezoid', id, level);
+	Figure.call(this, 'trapezoid', id);
 }
 Trapezoid.prototype = Object.create(Figure.prototype);
 
 
-function Triangle(id, level) {
+function Triangle(id) {
 	this.bouncyRight = 95;
 	this.bouncyBottom = 210;
 	this.styleColor = "border-bottom: 100px solid " + getRandomColor() + ";"
-	Figure.call(this, 'triangle', id, level);
+	Figure.call(this, 'triangle', id);
 }
 Triangle.prototype = Object.create(Figure.prototype);
 
 
-function Circle(id, level) {
+function Circle(id) {
 	this.bouncyRight = 100;
 	this.bouncyBottom = 210;
 	this.styleColor = "background: " + getRandomColor() + ";";
-	Figure.call(this, 'circle', id, level);
+	Figure.call(this, 'circle', id);
 }
 Circle.prototype = Object.create(Figure.prototype);
 
-function Square(id, level) {
+function Square(id) {
 	this.bouncyRight = 100;
 	this.bouncyBottom = 210;
 	this.styleColor = "background: " + getRandomColor() + ";";
-	Figure.call(this, 'square', id, level);
+	Figure.call(this, 'square', id);
 }
 Square.prototype = Object.create(Figure.prototype);
 
-function Rectangle(id, level) {
+function Rectangle(id) {
 	this.bouncyRight = 200;
 	this.bouncyBottom = 210;
 	this.styleColor = "background: " + getRandomColor() + ";";
-	Figure.call(this, 'rectangle', id, level);
+	Figure.call(this, 'rectangle', id);
 }
 Rectangle.prototype = Object.create(Figure.prototype);
 
-function Oval(id, level) {
+function Oval(id) {
 	this.bouncyRight = 200;
 	this.bouncyBottom = 210;
 	this.styleColor = "background: " + getRandomColor() + ";";
-	Figure.call(this, 'oval', id, level);
+	Figure.call(this, 'oval', id);
 }
 Oval.prototype = Object.create(Figure.prototype);
 
-function Parallelogram(id, level) {
+function Parallelogram(id) {
 	this.bouncyRight = 185;
 	this.bouncyBottom = 210;
 	this.styleColor = "background: " + getRandomColor() + ";";
-	Figure.call(this, 'parallelogram', id, level);
+	Figure.call(this, 'parallelogram', id);
 }
 Parallelogram.prototype = Object.create(Figure.prototype);
 
-function StarSix(id, level) {
+function StarSix(id) {
 	this.bouncyRight = 100;
 	this.bouncyBottom = 240;
 	this.styleColor = "border-bottom: 100px solid " + getRandomColor() + ";";
-	Figure.call(this, 'star-six', id, level);
+	Figure.call(this, 'star-six', id);
 }
 StarSix.prototype = Object.create(Figure.prototype);
 
-function StarFive(id, level) {
+function StarFive(id) {
 	this.bouncyRight = 195;
 	this.bouncyBottom = 280;
 	this.styleColor = "";
-	Figure.call(this, 'star-five', id, level);
+	Figure.call(this, 'star-five', id);
 }
 StarFive.prototype = Object.create(Figure.prototype);
 
-function Pentagon(id, level) {
+function Pentagon(id) {
 	this.bouncyRight = 90;
 	this.bouncyBottom = 153;
 	this.bouncyTop = 28;
 	this.styleColor = "";
-	Figure.call(this, 'pentagon', id, level);
+	Figure.call(this, 'pentagon', id);
 }
 Pentagon.prototype = Object.create(Figure.prototype);
 
-function Hexagon(id, level) {
+function Hexagon(id) {
 	this.bouncyRight = 100;
 	this.bouncyBottom = 190;
 	this.bouncyTop = 24;
 	this.styleColor = "";
-	Figure.call(this, 'hexagon', id, level);
+	Figure.call(this, 'hexagon', id);
 }
 Hexagon.prototype = Object.create(Figure.prototype);
 
-function Pacman(id, level) {
+function Pacman(id) {
 	this.bouncyRight = 105;
 	this.bouncyBottom = 225;
 	var c = getRandomColor();
 	this.styleColor = "border-top: 60px solid " + c + ";border-left: 60px solid " + c + ";border-bottom: 60px solid " + c + ";";
-	Figure.call(this, 'pacman', id, level);
+	Figure.call(this, 'pacman', id);
 }
 Pacman.prototype = Object.create(Figure.prototype);
 
-var shapes = [function(id, level) {return new Trapezoid(id, level)}, function(id, level) {return new Triangle(id, level)}, function(id, level) {return new Circle(id, level)}, function(id, level) {return new Square(id, level)}, function(id, level) {return new Rectangle(id, level)}, function(id, level) {return new Oval(id, level)}, function(id, level) {return new Parallelogram(id, level)}, function(id, level) {return new StarSix(id, level)}, function(id, level) {return new StarFive(id, level)}, function(id, level) {return new Pentagon(id, level)}, function(id, level) {return new Hexagon(id, level)}, function(id, level) {return new Pacman(id, level)}];
+var shapes = [function(id) {return new Trapezoid(id)}, function(id) {return new Triangle(id)}, function(id) {return new Circle(id)}, function(id) {return new Square(id)}, function(id) {return new Rectangle(id)}, function(id) {return new Oval(id)}, function(id) {return new Parallelogram(id)}, function(id) {return new StarSix(id)}, function(id) {return new StarFive(id)}, function(id) {return new Pentagon(id)}, function(id) {return new Hexagon(id)}, function(id) {return new Pacman(id)}];
 
+
+function addRandomFigure() {
+	figures.push(shapes[Math.floor(Math.random() * shapes.length)](++current_id));
+}
 
 function make() {
-	var n = 5;
+	var n = 4;
 	for (var i = 0; i < n; i++) {
-		figures.push(shapes[Math.floor(Math.random() * shapes.length)](i + 1, 1));
+		addRandomFigure();
 	}
 }
 
 function f() {
-	var last = figures[figures.length - 1];
-	last.remove();
+	var n = 3;
+	for (var i = 0; i < n; i++) {
+		addRandomFigure(1);
+	}
 }
-
 </script>
-
 </body>
 </html>
