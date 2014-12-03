@@ -11,6 +11,8 @@
 <button onclick="make()">Make move figures</button>
 <button onclick="f()">Remove last figure</button>
 
+<div id="timer">30</div>
+
 
 <script>
 var window_width = window.screen.availWidth;
@@ -251,6 +253,20 @@ function f() {
 		addRandomFigure(1);
 	}
 }
+
+function init(time) {
+	sec = time;
+	setInterval(tick, 1000);
+}
+            
+function tick() {
+    sec--;
+    document.getElementById("timer").childNodes[0].nodeValue = sec;
+}
+
+
+init(5);
 </script>
+
 </body>
 </html>
