@@ -9,10 +9,10 @@
 </style>
 
 <button onclick="make()">Make move figures</button>
-<button onclick="f()">Remove last figure</button>
 
-<div id="timer">30</div>
-
+<div id="timer">30.0</div>
+<div id="score">default</div>
+<div id="lastTime"></div>
 
 <script>
 var window_width = window.screen.availWidth;
@@ -22,6 +22,9 @@ var figures = [];
 var colors = ['black', 'yellow', 'olive', 'springgreen', 'mediumturquoise', 'navy', 'darkviolet', 'darkorange', 'maroon', 'darkgray', 'brown', 'peach'];
 var current_id = 0;
 var level = 1;
+var score = 0;
+var lastTime = 0;
+
 
 function getRandomColor() {
 	return colors[Math.floor(Math.random() * colors.length)];
@@ -59,15 +62,14 @@ Figure.prototype.generate = function() {
 
 
 Figure.prototype.move = function() {
-	console.log('this during move: ', this);
 	var fig = document.getElementById('figure' + this.id);
-	console.log('figure:', fig);
+
 	var bouncyBottom = this.bouncyBottom;
 	var bouncyRight = this.bouncyRight;
 	var bouncyLeft = this.bouncyLeft || 0;
 	var bouncyTop = this.bouncyTop || 0;
 
-	var speed_coef = 0.06 * level;
+	var speed_coef = level;
 
 	var x = parseInt(fig.style.left);
 	var y = parseInt(fig.style.top);
@@ -77,19 +79,17 @@ Figure.prototype.move = function() {
 	var dx = Math.floor((Math.random() * 10) + 1) * Math.pow(-1, Math.round(Math.random()));
 	var dy = Math.floor((Math.random() * 10) + 1) * Math.pow(-1, Math.round(Math.random()));
 
+	this.speed = Math.sqrt(Math.pow(dx * speed_coef, 2) + Math.pow(dy * speed_coef, 2));
 
 	function animate(time) {
-		var rend_coef = 1;
-		if (lastTime != null)
-			rend_coef = (lastTime - time) * speed_coef;
 
     	if ((x + dx < bouncyLeft) || (x + dx > window_width - bouncyRight))
     		dx *= -1;
-    	x += dx * rend_coef;
+    	x += dx * speed_coef;
 
     	if ((y + dy < bouncyTop) || (y + dy > window_height - bouncyBottom))
     		dy *= -1;
-    	y += dy * rend_coef;
+    	y += dy * speed_coef;
 
 
     	fig.style.left = x + "px";
@@ -104,26 +104,22 @@ Figure.prototype.remove = function() {
 	var fig = document.getElementById('figure' + this.id);
 	fig.parentNode.removeChild(fig);
 
-	console.log(figures.length, figures);
 	for (var i = 0; i < figures.length; i++)
 		if (figures[i].id == this.id) {
-			console.log('deleting element: ', i);
 			figures.splice(i, 1);
 			break;
 		}
-	console.log(figures.length, figures);
-	console.log(figures.length, figures);
 }
 
 
 Figure.prototype.addListener = function() {
-	console.log('this.id = ', this.id);
 	var figure = document.getElementById('figure' + this.id);
-	console.log('figure: ', figure);
 	figure.addEventListener("mouseover", function() {
 		var id = parseInt(/\d+/.exec(this.id));
 		for (var i = 0; i < figures.length; i++)
 			if (figures[i].id == id) {
+				score += Math.floor((figures[i].speed * (30 * 1000 - lastTime)) / 1000);
+				lastTime = 0;
 				figures[i].remove();
 				break;
 			}
@@ -247,25 +243,33 @@ function make() {
 	}
 }
 
-function f() {
-	var n = 3;
-	for (var i = 0; i < n; i++) {
-		addRandomFigure(1);
-	}
-}
 
-function init(time) {
-	sec = time;
-	setInterval(tick, 1000);
+function init_time(time) {
+	ddms = time * 10;
+	interval = setInterval(tick, 100);
 }
             
 function tick() {
-    sec--;
-    document.getElementById("timer").childNodes[0].nodeValue = sec;
+    ddms--;
+    sec = parseInt(ddms / 10);
+    document.getElementById("timer").childNodes[0].nodeValue = sec + "." + (ddms - sec*10) + " seconds " ;
+    if (ddms <= 0)
+    	clearInterval(interval);
 }
 
+interval = setInterval(showScore, 100);
+function showScore() {
+	document.getElementById("score").childNodes[0].nodeValue = score;
+}
 
-init(5);
+interval = setInterval(showLastTime, 100);
+function showLastTime() {
+	lastTime += 100;
+	document.getElementById("lastTime").innerHTML = lastTime;
+} 
+
+
+init_time(5);
 </script>
 
 </body>
