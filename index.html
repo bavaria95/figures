@@ -6,13 +6,38 @@
 
 <style>
 @import url('figures.css');
+
+body {
+	overflow: hidden;
+}
+
+#timer {
+	position: absolute;
+	left: 10px;
+	font-size: 300%;
+	color: green;
+	text-align: left;
+}
+
+
+#score {
+	position: absolute;
+	font-size: 300%;
+	color: red;
+	text-align: right;
+	bottom: 0;
+	right: 10px;
+}
 </style>
 
-<button onclick="make()">Make move figures</button>
 
-<div id="timer">30.0</div>
-<div id="score">default</div>
-<div id="lastTime"></div>
+
+<form id="start_info">
+  <center>Nickname <input type="text" name="nickname" placeholder="John Doe"></center><br>
+  <center># of figures: <input type="text" name="quant" value="8"></center><br>
+</form> 
+
+<center><button onclick="start()" id="go_button">Let's play!</button><center>
 
 <script>
 var window_width = window.screen.availWidth;
@@ -21,9 +46,12 @@ var window_height = window.screen.availHeight;
 var figures = [];
 var colors = ['black', 'yellow', 'olive', 'springgreen', 'mediumturquoise', 'navy', 'darkviolet', 'darkorange', 'maroon', 'darkgray', 'brown', 'peach'];
 var current_id = 0;
-var level = 1;
+var level = 0;
 var score = 0;
 var lastTime = 0;
+
+var username;
+var numberOfFigures;
 
 
 function getRandomColor() {
@@ -40,8 +68,8 @@ function Figure(type, id) {
 }
 
 Figure.prototype.generate = function() {
-	var pos_x = Math.floor((Math.random() * (window_width - this.bouncyRight - 20)));
-	var pos_y = Math.floor((Math.random() * (window_height - this.bouncyBottom - 20)));
+	var pos_x = Math.floor((Math.random() * (window_width - this.bouncyRight - 30)));
+	var pos_y = Math.floor((Math.random() * (window_height - this.bouncyBottom - 30)));
 
 	var fig = document.createElement("DIV"); 
 
@@ -83,11 +111,11 @@ Figure.prototype.move = function() {
 
 	function animate(time) {
 
-    	if ((x + dx < bouncyLeft) || (x + dx > window_width - bouncyRight))
+    	if ((x + dx*speed_coef < bouncyLeft) || (x + dx*speed_coef > window_width - bouncyRight))
     		dx *= -1;
     	x += dx * speed_coef;
 
-    	if ((y + dy < bouncyTop) || (y + dy > window_height - bouncyBottom))
+    	if ((y + dy*speed_coef < bouncyTop) || (y + dy*speed_coef > window_height - bouncyBottom))
     		dy *= -1;
     	y += dy * speed_coef;
 
@@ -123,6 +151,7 @@ Figure.prototype.addListener = function() {
 				figures[i].remove();
 				break;
 			}
+		addRandomFigure();
 	});
 }
 
@@ -236,13 +265,7 @@ function addRandomFigure() {
 	figures.push(shapes[Math.floor(Math.random() * shapes.length)](++current_id));
 }
 
-function make() {
-	var n = 4;
-	for (var i = 0; i < n; i++) {
-		addRandomFigure();
-	}
-}
-
+var timer;
 
 function init_time(time) {
 	ddms = time * 10;
@@ -252,24 +275,76 @@ function init_time(time) {
 function tick() {
     ddms--;
     sec = parseInt(ddms / 10);
-    document.getElementById("timer").childNodes[0].nodeValue = sec + "." + (ddms - sec*10) + " seconds " ;
+    document.getElementById("timer").childNodes[0].nodeValue = sec + "." + (ddms - sec*10);
     if (ddms <= 0)
     	clearInterval(interval);
 }
 
-interval = setInterval(showScore, 100);
-function showScore() {
-	document.getElementById("score").childNodes[0].nodeValue = score;
+
+function start() {
+	var x = document.forms[0];
+	username = x.elements[0].value;
+	numberOfFigures = parseInt(x.elements[1].value);
+
+	var form = document.getElementById('start_info');
+	form.parentNode.removeChild(form);
+
+	var button = document.getElementById('go_button');
+	button.parentNode.removeChild(button);
+
+
+	level = 1;
+	start_level(level, numberOfFigures);
 }
 
-interval = setInterval(showLastTime, 100);
-function showLastTime() {
-	lastTime += 100;
-	document.getElementById("lastTime").innerHTML = lastTime;
-} 
+function create_timer_view() {
+	timer_elem = document.createElement("DIV"); 
+
+	document.body.appendChild(timer_elem);  
+
+	var att = document.createAttribute("id");
+	att.value = 'timer'; 
+	timer_elem.setAttributeNode(att);
+
+	timer_elem.innerHTML = '30.0';
+}
+
+var score_elem;
+function create_score_view() {
+	score_elem = document.createElement("DIV"); 
+
+	document.body.appendChild(score_elem);  
+
+	var att = document.createAttribute("id");
+	att.value = 'score'; 
+	score_elem.setAttributeNode(att);
+}
+
+function update_score() {
+	score_elem.innerHTML = score;
+}
+
+function start_level(level, numberOfFigures) {
+	for (var i = 0; i < numberOfFigures; i++)
+		addRandomFigure();
+
+	create_timer_view();
+	create_score_view();
+
+	interval = setInterval(update_score, 100);
 
 
-init_time(5);
+	init_time(6);
+
+	setTimeout(function() {
+		console.log("Time out!");
+	}, 6000)
+
+
+
+}
+
+
 </script>
 
 </body>
