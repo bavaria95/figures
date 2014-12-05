@@ -19,7 +19,6 @@ body {
     text-align: left;
 }
 
-
 #score {
     position: absolute;
     font-size: 300%;
@@ -34,7 +33,18 @@ body {
     text-align: center;
     position: absolute;
     left: 30%;
-    top: 30%;
+    top: 25%;
+}
+
+#final {
+	font-size: xx-large;
+	text-align: center;
+	color: blue;
+}
+
+#name {
+	font-size: x-large;
+	color: blue;
 }
 </style>
 
@@ -58,6 +68,7 @@ var level = 0;
 var score = 0;
 var lastTime = 0;
 var records_list = [];
+var game_time = 3;
 
 var username;
 var numberOfFigures;
@@ -297,7 +308,7 @@ function init_time(time) {
 
     timer.innerHTML = '';
 
-    timer.innerHTML = '5';
+    timer.innerHTML = game_time;
 
     interval = setInterval(tick, 1000);
 }
@@ -315,15 +326,21 @@ function tick() {
 
 
 function start() {
-    var x = document.forms[0];
-    username = x.elements[0].value;
-    numberOfFigures = parseInt(x.elements[1].value);
+	remove_records_list();
+	remove_finish_msg();
+	if (username == null) {
+		score = 0;
+	    var x = document.forms[0];
+	    username = x.elements[0].value;
+	    numberOfFigures = parseInt(x.elements[1].value);
 
-    var form = document.getElementById('start_info');
-    form.parentNode.removeChild(form);
+	    var form = document.getElementById('start_info');
+	    form.parentNode.removeChild(form);
 
-    var button = document.getElementById('go_button');
-    button.parentNode.removeChild(button);
+	    var button = document.getElementById('go_button');
+	    if (button != null)
+	    	button.parentNode.removeChild(button);
+	}
 
     start_level_one();
 }
@@ -338,7 +355,7 @@ function start_level_one() {
     setTimeout(function(){
         remove_get_ready();
 
-        init_time(5);
+        init_time(game_time);
         create_score_view();
 
         for (var i = 0; i < numberOfFigures; i++)
@@ -349,7 +366,7 @@ function start_level_one() {
         setTimeout(function() {
             deleteFigures();
             start_level_two();
-        }, 5000);}, 1500);
+        }, game_time * 1000);}, 1500);
 }
 
 function start_level_two() {
@@ -359,7 +376,7 @@ function start_level_two() {
 
     setTimeout(function(){
         remove_get_ready();
-        init_time(5);
+        init_time(game_time);
         create_score_view();
 
         for (var i = 0; i < numberOfFigures * 2; i++)
@@ -369,9 +386,8 @@ function start_level_two() {
 
         setTimeout(function() {
             deleteFigures();
-            // remove_score_view();
             start_level_three();
-        }, 5000)}, 1500);
+        }, game_time * 1000)}, 1500);
 }
 
 function start_level_three() {
@@ -381,7 +397,7 @@ function start_level_three() {
 
     setTimeout(function() {
         remove_get_ready();
-        init_time(5);
+        init_time(game_time);
         create_score_view();
 
         for (var i = 0; i < numberOfFigures * 3; i++)
@@ -393,7 +409,7 @@ function start_level_three() {
             deleteFigures();
             remove_score_view();
             finish_game();
-        }, 5000)}, 1500);
+        }, game_time * 1000)}, 1500);
 }
 
 function create_get_ready() {
@@ -418,14 +434,87 @@ function finish_game() {
     remove_timer_view();
     remove_score_view();
 
-    finish_msg = document.createElement("DIV"); 
+    generate_finish_msg();
+
+    records_list.push({'name': username, 'score': score});
+    records_list.sort(function(x, y) { return y.score - x.score; });
+
+    if (records_list.length > 3)
+    	records_list.splice(3, records_list.length - 2);
+    generate_records_list();
+
+    b = document.createElement("BUTTON"); 
+	document.body.appendChild(b);
+
+	var att = document.createAttribute("id");
+	att.value = 'go_button'; 
+	b.setAttributeNode(att);
+
+	var att = document.createAttribute("onclick");
+	att.value = 'start();'; 
+	b.setAttributeNode(att);
+
+	b.innerHTML = 'Try again';
+
+	score = 0;
+}
+
+function generate_finish_msg() {
+	finish_msg = document.createElement("DIV"); 
     document.body.appendChild(finish_msg);  
 
     var att = document.createAttribute("id");
     att.value = 'final'; 
     finish_msg.setAttributeNode(att);
 
-    finish_msg.innerHTML = "Your final score is " + score;
+    finish_msg.innerHTML = "Your final score is " + score + " points";
+}
+
+function remove_finish_msg() {
+	finish_msg = document.getElementById('final');
+	if (finish_msg != null)
+		finish_msg.parentNode.removeChild(finish_msg);
+}
+
+function generate_records_list() {
+	name_elem = document.createElement('DIV');
+	document.body.appendChild(name_elem);
+
+	var att = document.createAttribute('id')
+	att.value = 'name';
+	name_elem.setAttributeNode(att);
+
+	name_elem.innerHTML = "Username: " + username;
+
+
+	ul = document.createElement("UL"); 
+	document.body.appendChild(ul);
+
+	var att = document.createAttribute("id");
+	att.value = 'list'; 
+	ul.setAttributeNode(att);
+
+
+	for (var i = 0; i < records_list.length; i++) {
+		li = document.createElement("LI"); 
+		ul.appendChild(li);
+
+		li.innerHTML = "Score: " + records_list[i]['score'];
+	}
+}
+
+function remove_records_list() {
+	name_elem = document.getElementById('name');
+	if (name_elem != null)
+		name_elem.parentNode.removeChild(name_elem);
+
+	ul = document.getElementById('list');
+	if (ul != null)
+		ul.parentNode.removeChild(ul);
+
+	b = document.getElementById('go_button');
+	if (b != null)
+		b.parentNode.removeChild(b);
 }
 
 
