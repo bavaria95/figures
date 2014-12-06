@@ -1,6 +1,8 @@
 simple_game
 ===========
 
+[Link to game](http://bavaria95.github.io/figures)
+
 simple game on javascript for lab class project
 
 * Po planszy gry, z jednostajną, a różną, prędkością poruszają się różne figury geometryczne
