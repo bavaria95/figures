@@ -37,14 +37,14 @@ body {
 }
 
 #final {
-    font-size: xx-large;
-    text-align: center;
-    color: blue;
+	font-size: xx-large;
+	text-align: center;
+	color: blue;
 }
 
 #name {
-    font-size: x-large;
-    color: blue;
+	font-size: x-large;
+	color: blue;
 }
 </style>
 
@@ -68,10 +68,9 @@ var level = 0;
 var score = 0;
 var lastTime = 0;
 var records_list = [];
-var game_time = 30;
+var game_time = 10;
 
 var username;
-
 var numberOfFigures;
 
 
@@ -105,10 +104,13 @@ Figure.prototype.generate = function() {
     fig.setAttributeNode(att);
 
     var att = document.createAttribute("style");
-    att.value = "position: absolute; left: " + pos_x + "px;" + "top: " + pos_y + "px;" + this.styleColor;
+    att.value = "position: absolute; left: " + pos_x + "px;" + "top: " + pos_y + "px;" + this.styleColor + ";transform: rotate(0deg);";
     fig.setAttributeNode(att);
 }
 
+Figure.prototype.rotate = function() {
+	console.log(this)
+}
 
 Figure.prototype.move = function() {
     var fig = document.getElementById('figure' + this.id);
@@ -130,7 +132,11 @@ Figure.prototype.move = function() {
 
     this.speed = Math.sqrt(Math.pow(dx * speed_coef, 2) + Math.pow(dy * speed_coef, 2));
 
+    var angle = 0;
+
     function animate(time) {
+    	angle = (angle + 1) % 360;
+
         var rend_coef = 1;
         if (lastTime != null)
             rend_coef = (lastTime - time) * speed_coef;
@@ -146,6 +152,10 @@ Figure.prototype.move = function() {
 
         fig.style.left = x + "px";
         fig.style.top = y + "px";
+
+		var str = fig.style.cssText;
+	    str = str.replace(/\d+deg/, angle + 'deg')
+	    fig.style.cssText = str;
 
         requestAnimationFrame(animate);
     }
@@ -170,6 +180,7 @@ Figure.prototype.addListener = function() {
         var id = parseInt(/\d+/.exec(this.id));
         for (var i = 0; i < figures.length; i++)
             if (figures[i].id == id) {
+            	figures[i].rotate();
                 score += Math.floor((figures[i].speed * (30 * 1000 - lastTime))/100);
                 lastTime = 0;
                 figures[i].remove();
@@ -182,8 +193,8 @@ Figure.prototype.addListener = function() {
 
 
 function Trapezoid(id) {
-    this.bouncyBottom = 210;
-    this.bouncyRight = 200;
+    this.bouncyBottom = 225;
+    this.bouncyRight = 210;
     this.styleColor = "border-bottom: 100px solid " + getRandomColor() + ";"
     Figure.call(this, 'trapezoid', id);
 }
@@ -191,8 +202,8 @@ Trapezoid.prototype = Object.create(Figure.prototype);
 
 
 function Triangle(id) {
-    this.bouncyRight = 95;
-    this.bouncyBottom = 210;
+    this.bouncyRight = 100;
+    this.bouncyBottom = 220;
     this.styleColor = "border-bottom: 100px solid " + getRandomColor() + ";"
     Figure.call(this, 'triangle', id);
 }
@@ -327,21 +338,21 @@ function tick() {
 
 
 function start() {
-    remove_records_list();
-    remove_finish_msg();
-    if (username == null) {
-        score = 0;
-        var x = document.forms[0];
-        username = x.elements[0].value;
-        numberOfFigures = parseInt(x.elements[1].value);
+	remove_records_list();
+	remove_finish_msg();
+	if (username == null) {
+		score = 0;
+	    var x = document.forms[0];
+	    username = x.elements[0].value;
+	    numberOfFigures = parseInt(x.elements[1].value);
 
-        var form = document.getElementById('start_info');
-        form.parentNode.removeChild(form);
+	    var form = document.getElementById('start_info');
+	    form.parentNode.removeChild(form);
 
-        var button = document.getElementById('go_button');
-        if (button != null)
-            button.parentNode.removeChild(button);
-    }
+	    var button = document.getElementById('go_button');
+	    if (button != null)
+	    	button.parentNode.removeChild(button);
+	}
 
     start_level_one();
 }
@@ -441,27 +452,27 @@ function finish_game() {
     records_list.sort(function(x, y) { return y.score - x.score; });
 
     if (records_list.length > 3)
-        records_list.splice(3, records_list.length - 2);
+    	records_list.splice(3, records_list.length - 2);
     generate_records_list();
 
     b = document.createElement("BUTTON"); 
-    document.body.appendChild(b);
+	document.body.appendChild(b);
 
-    var att = document.createAttribute("id");
-    att.value = 'go_button'; 
-    b.setAttributeNode(att);
+	var att = document.createAttribute("id");
+	att.value = 'go_button'; 
+	b.setAttributeNode(att);
 
-    var att = document.createAttribute("onclick");
-    att.value = 'start();'; 
-    b.setAttributeNode(att);
+	var att = document.createAttribute("onclick");
+	att.value = 'start();'; 
+	b.setAttributeNode(att);
 
-    b.innerHTML = 'Try again';
+	b.innerHTML = 'Try again';
 
-    score = 0;
+	score = 0;
 }
 
 function generate_finish_msg() {
-    finish_msg = document.createElement("DIV"); 
+	finish_msg = document.createElement("DIV"); 
     document.body.appendChild(finish_msg);  
 
     var att = document.createAttribute("id");
@@ -472,50 +483,50 @@ function generate_finish_msg() {
 }
 
 function remove_finish_msg() {
-    finish_msg = document.getElementById('final');
-    if (finish_msg != null)
-        finish_msg.parentNode.removeChild(finish_msg);
+	finish_msg = document.getElementById('final');
+	if (finish_msg != null)
+		finish_msg.parentNode.removeChild(finish_msg);
 }
 
 function generate_records_list() {
-    name_elem = document.createElement('DIV');
-    document.body.appendChild(name_elem);
+	name_elem = document.createElement('DIV');
+	document.body.appendChild(name_elem);
 
-    var att = document.createAttribute('id')
-    att.value = 'name';
-    name_elem.setAttributeNode(att);
+	var att = document.createAttribute('id')
+	att.value = 'name';
+	name_elem.setAttributeNode(att);
 
-    name_elem.innerHTML = "Username: " + username;
-
-
-    ul = document.createElement("UL"); 
-    document.body.appendChild(ul);
-
-    var att = document.createAttribute("id");
-    att.value = 'list'; 
-    ul.setAttributeNode(att);
+	name_elem.innerHTML = "Username: " + username;
 
 
-    for (var i = 0; i < records_list.length; i++) {
-        li = document.createElement("LI"); 
-        ul.appendChild(li);
+	ul = document.createElement("UL"); 
+	document.body.appendChild(ul);
 
-        li.innerHTML = "Score: " + records_list[i]['score'];
-    }
+	var att = document.createAttribute("id");
+	att.value = 'list'; 
+	ul.setAttributeNode(att);
+
+
+	for (var i = 0; i < records_list.length; i++) {
+		li = document.createElement("LI"); 
+		ul.appendChild(li);
+
+		li.innerHTML = "Score: " + records_list[i]['score'];
+	}
 }
 
 function remove_records_list() {
-    name_elem = document.getElementById('name');
-    if (name_elem != null)
-        name_elem.parentNode.removeChild(name_elem);
+	name_elem = document.getElementById('name');
+	if (name_elem != null)
+		name_elem.parentNode.removeChild(name_elem);
 
-    ul = document.getElementById('list');
-    if (ul != null)
-        ul.parentNode.removeChild(ul);
+	ul = document.getElementById('list');
+	if (ul != null)
+		ul.parentNode.removeChild(ul);
 
-    b = document.getElementById('go_button');
-    if (b != null)
-        b.parentNode.removeChild(b);
+	b = document.getElementById('go_button');
+	if (b != null)
+		b.parentNode.removeChild(b);
 }
 
 
