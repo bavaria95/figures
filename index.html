@@ -150,9 +150,9 @@ Figure.prototype.move = function() {
         fig.style.left = x + "px";
         fig.style.top = y + "px";
 
-		var str = fig.style.cssText;
-	    str = str.replace(/\d+deg/, angle + 'deg')
-	    fig.style.cssText = str;
+        var str = fig.style.cssText;
+        str = str.replace(/\d+deg/, angle + 'deg')
+        fig.style.cssText = str;
 
         requestAnimationFrame(animate);
     }
