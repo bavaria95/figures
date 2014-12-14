@@ -68,10 +68,9 @@ var level = 0;
 var score = 0;
 var lastTime = 0;
 var records_list = [];
-var game_time = 30;
+var game_time = 10;
 
 var username;
-
 var numberOfFigures;
 
 
@@ -105,10 +104,13 @@ Figure.prototype.generate = function() {
     fig.setAttributeNode(att);
 
     var att = document.createAttribute("style");
-    att.value = "position: absolute; left: " + pos_x + "px;" + "top: " + pos_y + "px;" + this.styleColor;
+    att.value = "position: absolute; left: " + pos_x + "px;" + "top: " + pos_y + "px;" + this.styleColor + ";transform: rotate(0deg);";
     fig.setAttributeNode(att);
 }
 
+Figure.prototype.rotate = function() {
+	console.log(this)
+}
 
 Figure.prototype.move = function() {
     var fig = document.getElementById('figure' + this.id);
@@ -130,7 +132,11 @@ Figure.prototype.move = function() {
 
     this.speed = Math.sqrt(Math.pow(dx * speed_coef, 2) + Math.pow(dy * speed_coef, 2));
 
+    var angle = 0;
+
     function animate(time) {
+    	angle = (angle + 1) % 360;
+
         var rend_coef = 1;
         if (lastTime != null)
             rend_coef = (lastTime - time) * speed_coef;
@@ -146,6 +152,10 @@ Figure.prototype.move = function() {
 
         fig.style.left = x + "px";
         fig.style.top = y + "px";
+
+		var str = fig.style.cssText;
+	    str = str.replace(/\d+deg/, angle + 'deg')
+	    fig.style.cssText = str;
 
         requestAnimationFrame(animate);
     }
@@ -170,6 +180,7 @@ Figure.prototype.addListener = function() {
         var id = parseInt(/\d+/.exec(this.id));
         for (var i = 0; i < figures.length; i++)
             if (figures[i].id == id) {
+            	figures[i].rotate();
                 score += Math.floor((figures[i].speed * (30 * 1000 - lastTime))/100);
                 lastTime = 0;
                 figures[i].remove();
@@ -182,8 +193,8 @@ Figure.prototype.addListener = function() {
 
 
 function Trapezoid(id) {
-    this.bouncyBottom = 210;
-    this.bouncyRight = 200;
+    this.bouncyBottom = 225;
+    this.bouncyRight = 210;
     this.styleColor = "border-bottom: 100px solid " + getRandomColor() + ";"
     Figure.call(this, 'trapezoid', id);
 }
@@ -191,8 +202,8 @@ Trapezoid.prototype = Object.create(Figure.prototype);
 
 
 function Triangle(id) {
-    this.bouncyRight = 95;
-    this.bouncyBottom = 210;
+    this.bouncyRight = 100;
+    this.bouncyBottom = 220;
     this.styleColor = "border-bottom: 100px solid " + getRandomColor() + ";"
     Figure.call(this, 'triangle', id);
 }
