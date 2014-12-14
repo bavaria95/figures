@@ -37,14 +37,14 @@ body {
 }
 
 #final {
-	font-size: xx-large;
-	text-align: center;
-	color: blue;
+    font-size: xx-large;
+    text-align: center;
+    color: blue;
 }
 
 #name {
-	font-size: x-large;
-	color: blue;
+    font-size: x-large;
+    color: blue;
 }
 </style>
 
@@ -71,6 +71,7 @@ var records_list = [];
 var game_time = 30;
 
 var username;
+
 var numberOfFigures;
 
 
@@ -326,21 +327,21 @@ function tick() {
 
 
 function start() {
-	remove_records_list();
-	remove_finish_msg();
-	if (username == null) {
-		score = 0;
-	    var x = document.forms[0];
-	    username = x.elements[0].value;
-	    numberOfFigures = parseInt(x.elements[1].value);
+    remove_records_list();
+    remove_finish_msg();
+    if (username == null) {
+        score = 0;
+        var x = document.forms[0];
+        username = x.elements[0].value;
+        numberOfFigures = parseInt(x.elements[1].value);
 
-	    var form = document.getElementById('start_info');
-	    form.parentNode.removeChild(form);
+        var form = document.getElementById('start_info');
+        form.parentNode.removeChild(form);
 
-	    var button = document.getElementById('go_button');
-	    if (button != null)
-	    	button.parentNode.removeChild(button);
-	}
+        var button = document.getElementById('go_button');
+        if (button != null)
+            button.parentNode.removeChild(button);
+    }
 
     start_level_one();
 }
@@ -440,27 +441,27 @@ function finish_game() {
     records_list.sort(function(x, y) { return y.score - x.score; });
 
     if (records_list.length > 3)
-    	records_list.splice(3, records_list.length - 2);
+        records_list.splice(3, records_list.length - 2);
     generate_records_list();
 
     b = document.createElement("BUTTON"); 
-	document.body.appendChild(b);
+    document.body.appendChild(b);
 
-	var att = document.createAttribute("id");
-	att.value = 'go_button'; 
-	b.setAttributeNode(att);
+    var att = document.createAttribute("id");
+    att.value = 'go_button'; 
+    b.setAttributeNode(att);
 
-	var att = document.createAttribute("onclick");
-	att.value = 'start();'; 
-	b.setAttributeNode(att);
+    var att = document.createAttribute("onclick");
+    att.value = 'start();'; 
+    b.setAttributeNode(att);
 
-	b.innerHTML = 'Try again';
+    b.innerHTML = 'Try again';
 
-	score = 0;
+    score = 0;
 }
 
 function generate_finish_msg() {
-	finish_msg = document.createElement("DIV"); 
+    finish_msg = document.createElement("DIV"); 
     document.body.appendChild(finish_msg);  
 
     var att = document.createAttribute("id");
@@ -471,50 +472,50 @@ function generate_finish_msg() {
 }
 
 function remove_finish_msg() {
-	finish_msg = document.getElementById('final');
-	if (finish_msg != null)
-		finish_msg.parentNode.removeChild(finish_msg);
+    finish_msg = document.getElementById('final');
+    if (finish_msg != null)
+        finish_msg.parentNode.removeChild(finish_msg);
 }
 
 function generate_records_list() {
-	name_elem = document.createElement('DIV');
-	document.body.appendChild(name_elem);
+    name_elem = document.createElement('DIV');
+    document.body.appendChild(name_elem);
 
-	var att = document.createAttribute('id')
-	att.value = 'name';
-	name_elem.setAttributeNode(att);
+    var att = document.createAttribute('id')
+    att.value = 'name';
+    name_elem.setAttributeNode(att);
 
-	name_elem.innerHTML = "Username: " + username;
-
-
-	ul = document.createElement("UL"); 
-	document.body.appendChild(ul);
-
-	var att = document.createAttribute("id");
-	att.value = 'list'; 
-	ul.setAttributeNode(att);
+    name_elem.innerHTML = "Username: " + username;
 
 
-	for (var i = 0; i < records_list.length; i++) {
-		li = document.createElement("LI"); 
-		ul.appendChild(li);
+    ul = document.createElement("UL"); 
+    document.body.appendChild(ul);
 
-		li.innerHTML = "Score: " + records_list[i]['score'];
-	}
+    var att = document.createAttribute("id");
+    att.value = 'list'; 
+    ul.setAttributeNode(att);
+
+
+    for (var i = 0; i < records_list.length; i++) {
+        li = document.createElement("LI"); 
+        ul.appendChild(li);
+
+        li.innerHTML = "Score: " + records_list[i]['score'];
+    }
 }
 
 function remove_records_list() {
-	name_elem = document.getElementById('name');
-	if (name_elem != null)
-		name_elem.parentNode.removeChild(name_elem);
+    name_elem = document.getElementById('name');
+    if (name_elem != null)
+        name_elem.parentNode.removeChild(name_elem);
 
-	ul = document.getElementById('list');
-	if (ul != null)
-		ul.parentNode.removeChild(ul);
+    ul = document.getElementById('list');
+    if (ul != null)
+        ul.parentNode.removeChild(ul);
 
-	b = document.getElementById('go_button');
-	if (b != null)
-		b.parentNode.removeChild(b);
+    b = document.getElementById('go_button');
+    if (b != null)
+        b.parentNode.removeChild(b);
 }
 
 
